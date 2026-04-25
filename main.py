@@ -19,7 +19,6 @@ BOOKS = [
 # Add a new books to the list
 BOOKS.append({"id": 4, "title": "Fourth Book", "author": "Author Four"})
 BOOKS.append({"id": 5, "title": "Fifth Book", "author": "Author Five"})
-BOOKS.pop(0)  # Remove the first book from the list
 
 # create the read_root endpoint
 @app.get("/")
@@ -30,6 +29,14 @@ def read_root():
 @app.get("/books")
 def read_books():
     return BOOKS
+
+# create the read_only_books endpoint
+@app.get("/book/{read_book}")
+def read_only_books(read_book: str):
+    for book in BOOKS:
+        if book.get("title").casefold() == read_book.casefold():
+            return book
+
 
 # Mount static files
 if __name__ == "__main__":
