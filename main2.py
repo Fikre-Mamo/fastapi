@@ -31,3 +31,11 @@ books = [
 @app.get("/books")
 def list_books():
     return books
+
+@app.post("/create_book")
+def create_book(create_book=Body()):
+    books.append(create_book)
+    return create_book
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
