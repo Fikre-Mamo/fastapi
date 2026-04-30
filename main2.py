@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Body, Request
 from fastapi.responses import HTMLResponse
-import pydantic
+from pydantic import BaseModel
 import uvicorn
 
 app = FastAPI()
@@ -19,6 +19,14 @@ class BOOK:
         self.description = description
         self.rating = rating
     
+class BookRequest(BaseModel):
+    id: int
+    book_name: str
+    author_name: str
+    description: str
+    rating: float
+
+
 books = [
     BOOK(1, "Mike and sytems", "Miko", "the best book to learn systems", 5),
     BOOK(2, "The live of API", "Fikre", "What you need to master API", 4.5),
@@ -32,10 +40,14 @@ books = [
 def list_books():
     return books
 
+@app.post("/create_new_book")
+def create_new_book(book: BookRequest):
+    new_book = BOOK(**book.model_dump())
+    print(type(new_book))
+    books.append(new_book)
+    return new_book
+
 @app.post("/create_book")
 def create_book(create_book=Body()):
     books.append(create_book)
     return create_book
-
-if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8000)
